@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Masjid Assalam Boyolali </title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Mapbox GL JS CSS -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+    <style>
+        /* Background header dengan gambar */
+        .header-bg {
+            background: url('https://mmc.tirto.id/image/2018/05/26/salat-tarawih-akbar-istiqlal-antarafoto_ratio-16x9.jpg') no-repeat center center;
+            background-size: cover;
+            color: white;
+            position: relative;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+            opacity: 40%;}
+
+        .header-bg::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 0;}
+
+        .header-bg .container {
+            position: relative;
+            z-index: 1;}
+
+        body {
+            background-color: #bdc7d1;}
+
+        .navbar-dark.bg-dark {
+            background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);}
+
+        .btn-primary {
+            background-color: #5fdf4e;
+            border: none;}
+
+        .btn-primary:hover {
+            background-color: #2ed931; }
+
+        .card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+
+        .card-title {
+            color: #2c5030;
+        }
+
+        footer.bg-dark {
+            background: #1a1a2e;
+        }
+
+        /* Mapbox map styling */
+        #map {
+            width: 100%;
+            height: 350px; /* Matches the placeholder image height */
+        }
+
+        /* Legend styling */
+        #legend {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            font-family: Arial, sans-serif;
+        }
+
+        #legend h4 {
+            margin: 0 0 10px;
+            font-size: 14px;
+        }
+
+        #legend label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+
+        #legend input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Responsive navbar-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#!">Pondok Pesantren Al Munawwir Krapyak</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#!">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Blog</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Page header with logo and tagline-->
+    <header class="py-5 header-bg border-bottom mb-4">
+        <div class="container">
+            <div class="text-center my-5">
+                <h1 class="fw-bolder">Pondok Pesantren Al Munawwir Krapyak</h1>
+                <p class="lead mb-0">Jl. KH. Ali Maksum No.111 RT.05, Krapyak Kulon, Panggungharjo, Kec. Sewon, Kabupaten Bantul, Daerah Istimewa Yogyakarta 55188</p>
+            </div>
+        </div>
+    </header>
+    <!-- Page content-->
+    <div class="container">
+        <div class="row">
+            <!-- Blog entries-->
+            <div class="col-lg-8">
+                <!-- Featured blog post-->
+                <div class="card mb-4">
+                    <div id="map"></div>
+                    <!-- Legend -->
+                    <div id="legend">
+                        <h4>Legenda</h4>
+                        <label>
+                            <input type="checkbox" id="asrama-putra-toggle" checked>
+                            <span class="legend-color" style="background-color: #a7a448;"></span>
+                            Asrama Putra
+                        </label>
+                        <label>
+                            <input type="checkbox" id="asrama-putri-toggle" checked>
+                            <span class="legend-color" style="background-color: #ac74aa;"></span>
+                            Asrama Putri
+                        </label>
+                        <label>
+                            <input type="checkbox" id="bangunan-umum-toggle" checked>
+                            <span class="legend-color" style="background-color: #788ad7;"></span>
+                            Bangunan Umum
+                        </label>
+                    </div>
+                    <div class="card-body">
+                        <h2 class="card-title">Peta Lokasi Pondok Pesantren Al-Munawwir</h2>
+                        <p class="card-text">Pondok pesantren Al-Munawwir merupakan pondok perantren yang bertempatan di Jl. KH. Ali Maksum No.111 RT.05, Krapyak Kulon, Panggungharjo, Kec. Sewon, Kabupaten Bantul, Daerah Istimewa Yogyakarta. Pondok pesantren Al-Munawwir Krapyak termasuk pada pondok persantren favorit di Kota Yogyakarta, di pondok memilik banyak santri dan santriwati yang tinggal dan mengemban ilmu di sana. Maka dari itu Pondok Pesantren Al-Munawwir memiliki luasan bangunan yang besar. Pada setiap gedung maupun asrama di Pondok Pesantren Al-Munawwir memiliki kegunaan yang berbeda. Pada peta diaatas akan menunjukkan lokasi bangunan yang ada di Pondok Pesantren Al-Munawwir</p>
+                        <a class="btn btn-primary" href="#!">Read more →</a>
+                    </div>
+                </div>
+                <!-- Nested row for non-featured blog posts-->
+                <div class="row">
+                    <div class="col-lg-6">
+                        <!-- Blog post-->
+                        <div class="card mb-4">
+                            <a href="#!"><img class="card-img-top" src="https://sdit.alhasanah.sch.id/wp-content/uploads/2021/04/Khataman-AlQuran-dan-Imtihan-Santri-Qiraati-SDIT-AlHasanah-1-dan-SDIT-AlHasanah-2-Bengkulu.jpg" alt="..." /></a>
+                            <div class="card-body">
+                                <div class="small text-muted">5 Januari 2024</div>
+                                <h2 class="card-title h4">Khataman Santri</h2>
+                                <p class="card-text">Khataman santri adalah sebuah momen istimewa dan penuh keberkahan yang diselenggarakan sebagai bentuk syukur atas selesainya para santri dalam mengkhatamkan Al-Qur’an, baik melalui hafalan (tahfidz) maupun tilawah. Acara ini menjadi bagian penting dalam perjalanan spiritual dan pendidikan santri di lingkungan pesantren, mencerminkan ketekunan, kedisiplinan, serta kecintaan para santri terhadap Kalamullah.</p>
+                                <a class="btn btn-primary" href="#!">Read more →</a>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <a href="#!"><img class="card-img-top" src="https://static.republika.co.id/uploads/images/inpicture_slide/gubernur-ntb-tgb-muhammad-zainul-majdi-mengisi-kajian-shubuh-_180211133459-377.jpg" alt="..." /></a>
+                            <div class="card-body">
+                                <div class="small text-muted">11 Januari 2024</div>
+                                <h2 class="card-title h4">Kajian Malam Minggu</h2>
+                                <p class="card-text">Kajian Malam Minggu merupakan salah satu agenda rutin yang diselenggarakan oleh Masjid/Pesantren sebagai sarana pembinaan rohani dan peningkatan pemahaman keislaman bagi jamaah, khususnya generasi muda. Kegiatan ini biasanya dilaksanakan setiap malam Minggu setelah shalat Isya, dan terbuka untuk umum.</p>
+                                <a class="btn btn-primary" href="#!">Read more →</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <a href="#!"><img class="card-img-top" src="https://kendalkab.go.id/images/konten/berita/20221210002.jpeg" alt="..." /></a>
+                            <div class="card-body">
+                                <div class="small text-muted">29 Januari 2024</div>
+                                <h2 class="card-title h4">Workshop Wirausaha</h2>
+                                <p class="card-text">Workshop ini dilakukan untuk mengembangkan skill yang santriwan dan santriwati. Workshop ini berisi tentang cara-cara dalam membangun dan mempertahankan bisnis.</p>
+                                <a class="btn btn-primary" href="#!">Read more →</a>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <a href="#!"><img class="card-img-top" src="https://kantongberita.com/wp-content/uploads/2023/04/IMG-20230417-WA0010.jpg" alt="..." /></a>
+                            <div class="card-body">
+                                <div class="small text-muted">31 Januari 2024</div>
+                                <h2 class="card-title h4">Zakat dan Sedekah</h2>
+                                <p class="card-text">Zakat fitrah adalah dengan menggunakan makanan pokok yang berlaku. Namun, di Indonesia terdapat beberapa kasus penggunaan uang untuk membayar zakat fitrah.</p>
+                                <a class="btn btn-primary" href="#!">Read more →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <nav aria-label="Pagination">
+                    <hr class="my-0" />
+                    <ul class="pagination justify-content-center my-4">
+                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
+                        <li class="page-item active" aria-current="page"><a class="page-link" href="#!">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#!">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#!">3</a></li>
+                        <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
+                        <li class="page-item"><a class="page-link" href="#!">15</a></li>
+                        <li class="page-item"><a class="page-link" href="#!">Older</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-header">Keterangan Peta</div>
+                    <div class="card-body">
+                        <p><span>1. Gunakan tombol zoom in <img src="https://e7.pngegg.com/pngimages/532/27/png-clipart-plus-and-minus-signs-computer-icons-symbol-symbol-miscellaneous-logo-thumbnail.png" width="20px">, zoom out <img src="https://w7.pngwing.com/pngs/964/968/png-transparent-black-line-illustration-plus-and-minus-signs-computer-icons-plus-minus-sign-meno-symbol-minus.png" width="20px">, dan reset bearing to north
+                            <img src="https://media.istockphoto.com/id/1130884763/id/vektor/ikon-panah-utara-atau-simbol-titik-arah-n-logo-vektor-untuk-peta-navigator-gps-terisolasi.jpg?s=170667a&w=0&k=20&c=938uNk0uWvjMCjca4xKFgM8XIDCKnAvy9IyaGqFLgu0=" width="23px"> untuk mengatur posisi peta.</span></p>
+                        <p><span>2. Titik biru bertuliskan huruf "A" merupakan titik lokasi Anda.</span></p>
+                        <p><span>3. Klik tombol <img src="https://e7.pngegg.com/pngimages/962/833/png-clipart-red-location-logo-google-map-maker-google-maps-pin-pin-heart-pin.png" width="20px"> untuk menampilkan lokasi Pondok Pesantren Al-Munawwir.</span></p>
+                        <p><span>4. Klik salah satu bangunan sebagai tujuan destinasi.</span></p>
+                        <p><span>5. Rute ditampilkan sebagai garis biru pada peta.</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer-->
+    <footer class="py-5 bg-dark">
+        <div class="container"><p class="m-0 text-center text-white">Copyright © Pondok Pesantren Al-Munawwir Website 2023</p></div>
+    </footer>
+    
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Mapbox GL JS -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <!-- Proj4js for coordinate transformation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.8.0/proj4.js"></script>
+    <script>
+        // Mapbox access token
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZmFkaWxhMTIwNSIsImEiOiJjbTl0Y3htcXYwYW1qMnJvZGpqcW91cGg1In0.9gMaA9zO5fa7fR7rtYPTxQ';
+
+ // GeoJSON data
+ const geojsonAsramaPutra = {
+"type": "FeatureCollection",
+"name": "Asrama Putra wgs",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 2, "Nama": "Komplek AB", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_084453.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361432969439946, -7.826925921668165 ], [ 110.3615145005908, -7.826739564751947 ], [ 110.361677767602529, -7.826810994069583 ], [ 110.361596236451703, -7.826997350985795 ], [ 110.361432969439946, -7.826925921668165 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 4, "Nama": "Komplek Asrama Ma'had Aly", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_102026.jpg\" width= '300'height='400' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361274549010787, -7.827046469404786 ], [ 110.361488836969599, -7.827143503678909 ], [ 110.361459704512825, -7.827207839036232 ], [ 110.361245416554013, -7.827110804762134 ], [ 110.361274549010787, -7.827046469404786 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 5, "Nama": "Komplek Madrasah Huffadh 1", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_102557.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361300626381421, -7.827195658420205 ], [ 110.361285886998004, -7.827285984385202 ], [ 110.361144146705854, -7.827262855216187 ], [ 110.361158886089257, -7.827172529251184 ], [ 110.361300626381421, -7.827195658420205 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 6, "Nama": "Komplek SMK Azzahra", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_102451.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361285886998004, -7.827290141647191 ], [ 110.361306956757645, -7.8271714707141 ], [ 110.361386303541167, -7.827185558558623 ], [ 110.361365233781527, -7.827304229491725 ], [ 110.361285886998004, -7.827290141647191 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 7, "Nama": "Komplek K2 Al-Kandiyas", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_104057.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.362073499178152, -7.827672137333893 ], [ 110.361814615136225, -7.827649839292314 ], [ 110.3618210507871, -7.827575120294868 ], [ 110.36207993482904, -7.827597418336437 ], [ 110.362073499178152, -7.827672137333893 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 8, "Nama": "Komplek K2 Al-Kandiyas", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_104143.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.362018320973604, -7.827454070046005 ], [ 110.36217100586839, -7.827472210825599 ], [ 110.362156365222717, -7.827595436260139 ], [ 110.362003680327916, -7.827577295480567 ], [ 110.362018320973604, -7.827454070046005 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 9, "Nama": "Asrama SMK Putra", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_085522.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361044387869853, -7.826798356450748 ], [ 110.361199340362091, -7.826822922089754 ], [ 110.361178343151067, -7.826955366036183 ], [ 110.361023390658815, -7.826930800397166 ], [ 110.361044387869853, -7.826798356450748 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 10, "Nama": "Komplek Padang Jagad", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_091147.jpg\" width= '300'height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361069331441811, -7.826999794690646 ], [ 110.361214457678457, -7.827008109214649 ], [ 110.361210434077833, -7.827078339334415 ], [ 110.361065307841187, -7.827070024810441 ], [ 110.361069331441811, -7.826999794690646 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 11, "Nama": "Komplek Padang Jagad", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_091147.jpg\" width= '300'height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361143028358853, -7.827155880981645 ], [ 110.361152547638369, -7.827100757711804 ], [ 110.361246652932451, -7.827117008826836 ], [ 110.361237133652921, -7.82717213209667 ], [ 110.361143028358853, -7.827155880981645 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 14, "Nama": "Komplek IJ Al-Masyhuriyyah", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_085635.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361029081587134, -7.826623656964051 ], [ 110.361050663163127, -7.826474818508814 ], [ 110.361126249744714, -7.826485778563153 ], [ 110.361104668168707, -7.82663461701836 ], [ 110.361029081587134, -7.826623656964051 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 16, "Nama": "Komplek K1 Darul Muhaimin", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_084914.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361267557252035, -7.826573391887299 ], [ 110.361290866171203, -7.82648859564686 ], [ 110.361370610014774, -7.826510515755535 ], [ 110.361347301095606, -7.826595311995947 ], [ 110.361267557252035, -7.826573391887299 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 18, "Nama": "Komplek M Al-Busyro", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_090643.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361623806259402, -7.826573250162446 ], [ 110.361537306865102, -7.826533945140039 ], [ 110.361568900549827, -7.826464416249773 ], [ 110.361655399944098, -7.826503721272212 ], [ 110.361623806259402, -7.826573250162446 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 19, "Nama": "Komplek Ribathul Qur'an Putra", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_085954.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360868365618074, -7.826743603420701 ], [ 110.360849091039768, -7.826859817789897 ], [ 110.360756627906284, -7.826844482440932 ], [ 110.36077590248459, -7.826728268071736 ], [ 110.360868365618074, -7.826743603420701 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 20, "Nama": "Komplek Madrasah Huffadh 2", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_090220.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360935826642105, -7.826512497447501 ], [ 110.360817155709015, -7.826492089070475 ], [ 110.360827770704446, -7.826430364837771 ], [ 110.360946441637552, -7.826450773214804 ], [ 110.360935826642105, -7.826512497447501 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 21, "Nama": "Komplek Gipa Al Qosim", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_090331.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360944330132568, -7.826445792289253 ], [ 110.360845217227464, -7.826430674972942 ], [ 110.36085421348308, -7.82637169327209 ], [ 110.360953326388184, -7.826386810588401 ], [ 110.360944330132568, -7.826445792289253 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 22, "Nama": "Komplek S", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_111641.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.359956744202478, -7.825718932824069 ], [ 110.360056518490182, -7.825728759079693 ], [ 110.360036388884154, -7.8259331520025 ], [ 110.359936614596464, -7.825923325746905 ], [ 110.359956744202478, -7.825718932824069 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 23, "Nama": "Komplek T Asy-Syathibi", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_111455.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.359887582480354, -7.825703626541313 ], [ 110.359740377612709, -7.82568624162754 ], [ 110.359748996830049, -7.825613259341586 ], [ 110.359896201697694, -7.825630644255376 ], [ 110.359887582480354, -7.825703626541313 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 29, "Nama": "Komplek Nurussalam", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_110319.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360868494315838, -7.824252175236585 ], [ 110.360901614001236, -7.824146916408434 ], [ 110.360978101618741, -7.824170537218332 ], [ 110.360944981933329, -7.824275796040531 ], [ 110.360868494315838, -7.824252175236585 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 30, "Nama": "Komplek Nurussalam", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_110119.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360984465566261, -7.824165817566017 ], [ 110.361071375648876, -7.82419451789643 ], [ 110.36105439959411, -7.82424497193899 ], [ 110.360967489511509, -7.824216271612045 ], [ 110.360984465566261, -7.824165817566017 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 40, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_104944.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360617811394974, -7.82470968634998 ], [ 110.360786808973756, -7.824737275418571 ], [ 110.36077795105038, -7.824790529165037 ], [ 110.360608953471598, -7.824762940099959 ], [ 110.360617811394974, -7.82470968634998 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 43, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360561005987037, -7.824843415367082 ], [ 110.360554330010444, -7.824895758992574 ], [ 110.360436200598471, -7.824880971873569 ], [ 110.360442876575064, -7.824828628246225 ], [ 110.360561005987037, -7.824843415367082 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 44, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360559289307346, -7.824893869331124 ], [ 110.360568529930916, -7.824840658319211 ], [ 110.360621747001446, -7.824849728695266 ], [ 110.360612506377876, -7.824902939706045 ], [ 110.360559289307346, -7.824893869331124 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 45, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.36031113372043, -7.824766884061658 ], [ 110.360316093017317, -7.824726067359685 ], [ 110.360361073910838, -7.824731431314261 ], [ 110.360356114613964, -7.82477224801571 ], [ 110.36031113372043, -7.824766884061658 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 46, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360401545517647, -7.82477907238161 ], [ 110.36035983314045, -7.824770785184606 ], [ 110.360366890601412, -7.824735920918905 ], [ 110.360408602978609, -7.824744208116615 ], [ 110.360401545517647, -7.82477907238161 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 47, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360591715479387, -7.824695738279929 ], [ 110.360602494284691, -7.824594293025397 ], [ 110.360645983503616, -7.824598828216131 ], [ 110.36063520469834, -7.824700273469577 ], [ 110.360591715479387, -7.824695738279929 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 48, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360602494284691, -7.824594293025397 ], [ 110.360594121443867, -7.824673094429393 ], [ 110.360498795842929, -7.824663153581541 ], [ 110.360507168683739, -7.824584352175648 ], [ 110.360602494284691, -7.824594293025397 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 49, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360447663451453, -7.824635926921339 ], [ 110.36045314637316, -7.824600770634697 ], [ 110.360502360547883, -7.824608303745113 ], [ 110.360496877626176, -7.824643460031122 ], [ 110.360447663451453, -7.824635926921339 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 50, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360432531764033, -7.824597615199707 ], [ 110.36045314637316, -7.824600770634697 ], [ 110.360447663451453, -7.824635926921339 ], [ 110.360427048842311, -7.824632771486615 ], [ 110.36041331540477, -7.824720829756505 ], [ 110.36037407864255, -7.824714823869325 ], [ 110.360387812080106, -7.824626765598156 ], [ 110.360393295001828, -7.824591609310739 ], [ 110.360432531764033, -7.824597615199707 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 52, "Nama": "Komplek K3 Arafah", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_103702.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361975539355981, -7.82660555858024 ], [ 110.361923852933842, -7.826602985106105 ], [ 110.361928006662794, -7.826521107377302 ], [ 110.361979693084947, -7.826523680851944 ], [ 110.361986688376476, -7.826385790600287 ], [ 110.362059590483867, -7.826389488987513 ], [ 110.362048441463372, -7.826609256967462 ], [ 110.361975539355981, -7.82660555858024 ] ] ] ] } }
+]
+};
+
+        const geojsonAsramaPutri = {
+"type": "FeatureCollection",
+"name": "Asrama Putri wgs",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 3, "Nama": "Komplek R2", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_102853.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361705789750317, -7.826602629600295 ], [ 110.361862374168922, -7.8266097359354 ], [ 110.361851414114909, -7.826851235056978 ], [ 110.361694829696305, -7.826844128721857 ], [ 110.361705789750317, -7.826602629600295 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 15, "Nama": "Komplek Ribathul Qur'an Putri", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_085345.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361134146935527, -7.826689417290033 ], [ 110.361194316384882, -7.826560289595351 ], [ 110.361266501570285, -7.826593925624167 ], [ 110.361206332120929, -7.826723053318842 ], [ 110.361134146935527, -7.826689417290033 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 17, "Nama": "Komplek R1", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\1653725443535.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361475042418519, -7.826508387427135 ], [ 110.361627727313319, -7.826576037417649 ], [ 110.361574047276562, -7.826697192360948 ], [ 110.361421362381748, -7.826629542370418 ], [ 110.361475042418519, -7.826508387427135 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 24, "Nama": "Komplek T Asy-Syathibi", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_111307.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.359906857058704, -7.824718544416778 ], [ 110.359809917267825, -7.824701159502994 ], [ 110.359821378438696, -7.824637251017731 ], [ 110.359918318229575, -7.824654635931474 ], [ 110.359906857058704, -7.824718544416778 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 25, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_110606.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360593183219521, -7.823943404022595 ], [ 110.360646546882876, -7.823951988227164 ], [ 110.360628217136849, -7.824065934998893 ], [ 110.36057485347348, -7.824057350794338 ], [ 110.360593183219521, -7.823943404022595 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 26, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_110511.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360510604879138, -7.824300550620588 ], [ 110.36040667332945, -7.824281276042288 ], [ 110.36044046242408, -7.824099079943828 ], [ 110.360544393973754, -7.824118354522142 ], [ 110.360510604879138, -7.824300550620588 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 27, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_110553.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360684831949683, -7.824120276623516 ], [ 110.360648550390536, -7.824322848662163 ], [ 110.360573657377017, -7.824309434988103 ], [ 110.360609938936179, -7.824106862949461 ], [ 110.360684831949683, -7.824120276623516 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 28, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_110541.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360380406992363, -7.824390687619134 ], [ 110.360391883062775, -7.824304515232474 ], [ 110.360631681492862, -7.824336450563198 ], [ 110.36062020542245, -7.824422622949855 ], [ 110.360380406992363, -7.824390687619134 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 31, "Nama": "Komplek Nurussalam", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_110033.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361021517236324, -7.824335840118105 ], [ 110.360936531204587, -7.824308605851692 ], [ 110.360965714759359, -7.824219224729588 ], [ 110.361050700791111, -7.824246459001841 ], [ 110.361021517236324, -7.824335840118105 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 33, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_105722.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361011789384818, -7.824408497692153 ], [ 110.360993247389956, -7.824470182477821 ], [ 110.360889483639539, -7.824439569929929 ], [ 110.360908025634401, -7.824377885139742 ], [ 110.361011789384818, -7.824408497692153 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 34, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_105722.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360888522245673, -7.824439251967093 ], [ 110.360717773097548, -7.824388329985418 ], [ 110.36075821044146, -7.824255250394503 ], [ 110.360928959589586, -7.824306172392419 ], [ 110.360888522245673, -7.824439251967093 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 35, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_105722.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.36079029001877, -7.824506287775096 ], [ 110.360664018690159, -7.824485879411856 ], [ 110.360677252407868, -7.824405516842818 ], [ 110.360803523736465, -7.824425925209995 ], [ 110.36079029001877, -7.824506287775096 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 36, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_105722.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360813560565646, -7.824599259194997 ], [ 110.360828995631778, -7.824519433116927 ], [ 110.360946492819735, -7.824541731141581 ], [ 110.360931057753618, -7.824621557215379 ], [ 110.360813560565646, -7.824599259194997 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 37, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_105722.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360932249892272, -7.824638233488321 ], [ 110.360942263857169, -7.824576441516107 ], [ 110.360987395319796, -7.824583619930613 ], [ 110.3609773813549, -7.824645411901745 ], [ 110.360932249892272, -7.824638233488321 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 41, "Nama": "Komplek L", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_105026.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360762012489275, -7.824612935629248 ], [ 110.360905832099235, -7.824632966053742 ], [ 110.360895776192962, -7.824703829811211 ], [ 110.36075195658303, -7.824683799390113 ], [ 110.360762012489275, -7.824612935629248 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 42, "Nama": "Komplek L", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_105026.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360761237599164, -7.824613348992984 ], [ 110.360744213858851, -7.824719548024984 ], [ 110.360638306844109, -7.824702885758666 ], [ 110.360655330584422, -7.82459668672243 ], [ 110.360761237599164, -7.824613348992984 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 51, "Nama": "Komplek R1", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\1653725443535.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361684108473327, -7.826600773084031 ], [ 110.361660371268286, -7.826655852123638 ], [ 110.3616831732799, -7.826665692383046 ], [ 110.361633874950471, -7.826779927286204 ], [ 110.361630409044736, -7.826787958540195 ], [ 110.361607607033108, -7.826778118280795 ], [ 110.361607651597936, -7.826778015014444 ], [ 110.361552518664624, -7.826754232784171 ], [ 110.361628955595265, -7.826576982249907 ], [ 110.361684108473327, -7.826600773084031 ] ] ] ] } }
+]
+}
+;
+
+        const geojsonBangunanUmum = {
+"type": "FeatureCollection",
+"name": "Bangunan Umum wgs",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 0, "Nama": "Masjid Al Munawwir", "Kategori": "Bangunan Umum", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\1653722063702.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361285764576337, -7.826875467626356 ], [ 110.361545097768882, -7.826993903257583 ], [ 110.361479337444692, -7.827137895691557 ], [ 110.361220004252175, -7.827019460060307 ], [ 110.361285764576337, -7.826875467626356 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 1, "Nama": "Komplek CD Ma'had Aly", "Kategori": "Bangunan Umum", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_101922.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361498729764122, -7.827130383365744 ], [ 110.361554135243907, -7.827004631602587 ], [ 110.361630477689232, -7.827038267630456 ], [ 110.361575072209433, -7.827164019393617 ], [ 110.361498729764122, -7.827130383365744 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 2, "Nama": "Komplek AB", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_084453.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361432969439946, -7.826925921668176 ], [ 110.3615145005908, -7.826739564751954 ], [ 110.361677767602529, -7.826810994069588 ], [ 110.361596236451703, -7.826997350985804 ], [ 110.361432969439946, -7.826925921668176 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 3, "Nama": "Komplek R2", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_102853.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361705789750317, -7.826602629600287 ], [ 110.361862374168922, -7.826609735935404 ], [ 110.361851414114909, -7.826851235056978 ], [ 110.361694829696305, -7.826844128721855 ], [ 110.361705789750317, -7.826602629600287 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 4, "Nama": "Komplek Asrama Ma'had Aly", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_102026.jpg\" width= '300'height='400' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361274549010787, -7.827046469404796 ], [ 110.361488836969599, -7.827143503678905 ], [ 110.361459704512825, -7.82720783903624 ], [ 110.361245416554013, -7.827110804762134 ], [ 110.361274549010787, -7.827046469404796 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 5, "Nama": "Komplek Madrasah Huffadh 1", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_102557.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361300626381421, -7.827195658420203 ], [ 110.361285886998004, -7.827285984385197 ], [ 110.361144146705854, -7.827262855216185 ], [ 110.361158886089257, -7.827172529251179 ], [ 110.361300626381421, -7.827195658420203 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 6, "Nama": "Komplek SMK Azzahra", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_102451.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361285886998004, -7.827290141647185 ], [ 110.361306956757645, -7.827171470714097 ], [ 110.361386303541167, -7.82718555855863 ], [ 110.361365233781527, -7.827304229491729 ], [ 110.361285886998004, -7.827290141647185 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 7, "Nama": "Komplek K2 Al-Kandiyas", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_104057.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.362073499178152, -7.827672137333889 ], [ 110.361814615136225, -7.827649839292319 ], [ 110.3618210507871, -7.827575120294865 ], [ 110.36207993482904, -7.827597418336441 ], [ 110.362073499178152, -7.827672137333889 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 8, "Nama": "Komplek K2 Al-Kandiyas", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_104143.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.362018320973604, -7.827454070046 ], [ 110.36217100586839, -7.827472210825593 ], [ 110.362156365222717, -7.827595436260147 ], [ 110.362003680327916, -7.827577295480562 ], [ 110.362018320973604, -7.827454070046 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 9, "Nama": "Asrama SMK Putra", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_085522.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361044387869853, -7.826798356450745 ], [ 110.361199340362091, -7.826822922089756 ], [ 110.361178343151067, -7.826955366036177 ], [ 110.361023390658815, -7.826930800397168 ], [ 110.361044387869853, -7.826798356450745 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 10, "Nama": "Komplek Padang Jagad", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_091147.jpg\" width= '300'height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361069331441811, -7.826999794690658 ], [ 110.361214457678457, -7.827008109214641 ], [ 110.361210434077833, -7.827078339334419 ], [ 110.361065307841187, -7.827070024810441 ], [ 110.361069331441811, -7.826999794690658 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 11, "Nama": "Komplek Padang Jagad", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_091147.jpg\" width= '300'height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361143028358853, -7.827155880981647 ], [ 110.361152547638369, -7.827100757711797 ], [ 110.361246652932451, -7.82711700882684 ], [ 110.361237133652921, -7.827172132096678 ], [ 110.361143028358853, -7.827155880981647 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 12, "Nama": "Ruang Tamu Umum", "Kategori": "Bangunan Umum", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_085825.jpg\" width= '300'height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361041033715324, -7.826798356450745 ], [ 110.361018357740861, -7.826934601264043 ], [ 110.360956976719564, -7.826924385282696 ], [ 110.360979652694056, -7.826788140469382 ], [ 110.361041033715324, -7.826798356450745 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 14, "Nama": "Komplek IJ Al-Masyhuriyyah", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_085635.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361029081587134, -7.82662365696405 ], [ 110.361050663163127, -7.826474818508816 ], [ 110.361126249744714, -7.826485778563143 ], [ 110.361104668168707, -7.82663461701837 ], [ 110.361029081587134, -7.82662365696405 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 15, "Nama": "Komplek Ribathul Qur'an Putri", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_085345.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361134146935527, -7.826689417290036 ], [ 110.361194316384882, -7.826560289595349 ], [ 110.361266501570285, -7.82659392562416 ], [ 110.361206332120929, -7.826723053318836 ], [ 110.361134146935527, -7.826689417290036 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 16, "Nama": "Komplek K1 Darul Muhaimin", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_084914.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361267557252035, -7.826573391887299 ], [ 110.361290866171203, -7.826488595646868 ], [ 110.361370610014774, -7.826510515755531 ], [ 110.361347301095606, -7.826595311995948 ], [ 110.361267557252035, -7.826573391887299 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 17, "Nama": "Komplek R1", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\1653725443535.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361475042418519, -7.826508387427132 ], [ 110.361627727313319, -7.826576037417646 ], [ 110.361574047276562, -7.826697192360944 ], [ 110.361421362381748, -7.826629542370428 ], [ 110.361475042418519, -7.826508387427132 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 18, "Nama": "Komplek M Al-Busyro", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_090643.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361623806259402, -7.826573250162456 ], [ 110.361537306865102, -7.826533945140034 ], [ 110.361568900549827, -7.826464416249781 ], [ 110.361655399944098, -7.826503721272207 ], [ 110.361623806259402, -7.826573250162456 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 19, "Nama": "Komplek Ribathul Qur'an Putra", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_085954.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360868365618074, -7.826743603420707 ], [ 110.360849091039768, -7.826859817789902 ], [ 110.360756627906284, -7.826844482440936 ], [ 110.36077590248459, -7.826728268071738 ], [ 110.360868365618074, -7.826743603420707 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 20, "Nama": "Komplek Madrasah Huffadh 2", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_090220.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360935826642105, -7.826512497447499 ], [ 110.360817155709015, -7.826492089070475 ], [ 110.360827770704446, -7.826430364837767 ], [ 110.360946441637552, -7.826450773214797 ], [ 110.360935826642105, -7.826512497447499 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 21, "Nama": "Komplek Gipa Al Qosim", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_090331.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360944330132568, -7.826445792289259 ], [ 110.360845217227464, -7.826430674972944 ], [ 110.36085421348308, -7.826371693272086 ], [ 110.360953326388184, -7.826386810588402 ], [ 110.360944330132568, -7.826445792289259 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 22, "Nama": "Komplek S", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_111641.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.359956744202478, -7.82571893282407 ], [ 110.360056518490182, -7.825728759079685 ], [ 110.360036388884154, -7.825933152002494 ], [ 110.359936614596464, -7.825923325746898 ], [ 110.359956744202478, -7.82571893282407 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 23, "Nama": "Komplek T Asy-Syathibi", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_111455.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.359887582480354, -7.825703626541306 ], [ 110.359740377612709, -7.825686241627545 ], [ 110.359748996830049, -7.825613259341592 ], [ 110.359896201697694, -7.825630644255368 ], [ 110.359887582480354, -7.825703626541306 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 24, "Nama": "Komplek T Asy-Syathibi", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_111307.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.359906857058704, -7.824718544416772 ], [ 110.359809917267825, -7.824701159503 ], [ 110.359821378438696, -7.824637251017725 ], [ 110.359918318229575, -7.824654635931481 ], [ 110.359906857058704, -7.824718544416772 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 25, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_110606.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360593183219521, -7.823943404022599 ], [ 110.360646546882876, -7.823951988227156 ], [ 110.360628217136849, -7.824065934998895 ], [ 110.36057485347348, -7.824057350794337 ], [ 110.360593183219521, -7.823943404022599 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 26, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_110511.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360510604879138, -7.824300550620592 ], [ 110.36040667332945, -7.824281276042292 ], [ 110.36044046242408, -7.824099079943825 ], [ 110.360544393973754, -7.824118354522142 ], [ 110.360510604879138, -7.824300550620592 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 27, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_110553.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360684831949683, -7.82412027662351 ], [ 110.360648550390536, -7.824322848662164 ], [ 110.360573657377017, -7.824309434988105 ], [ 110.360609938936179, -7.824106862949451 ], [ 110.360684831949683, -7.82412027662351 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 28, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_110541.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360380406992363, -7.824390687619131 ], [ 110.360391883062775, -7.824304515232474 ], [ 110.360631681492862, -7.824336450563195 ], [ 110.36062020542245, -7.824422622949855 ], [ 110.360380406992363, -7.824390687619131 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 29, "Nama": "Komplek Nurussalam", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_110319.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360868494315838, -7.82425217523659 ], [ 110.360901614001236, -7.824146916408441 ], [ 110.360978101618741, -7.82417053721834 ], [ 110.360944981933329, -7.824275796040527 ], [ 110.360868494315838, -7.82425217523659 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 30, "Nama": "Komplek Nurussalam", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_110119.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360984465566261, -7.824165817566016 ], [ 110.361071375648876, -7.824194517896425 ], [ 110.36105439959411, -7.824244971938984 ], [ 110.360967489511509, -7.824216271612046 ], [ 110.360984465566261, -7.824165817566016 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 31, "Nama": "Komplek Nurussalam", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_110033.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361021517236324, -7.824335840118105 ], [ 110.360936531204587, -7.824308605851698 ], [ 110.360965714759359, -7.824219224729594 ], [ 110.361050700791111, -7.82424645900184 ], [ 110.361021517236324, -7.824335840118105 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 32, "Nama": "Badan Usaha Komplek Q", "Kategori": "Bangunan Umum", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_105945.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361033343252089, -7.824361445064373 ], [ 110.361021803349686, -7.824403868016165 ], [ 110.360960304039011, -7.824387449003363 ], [ 110.360971843941428, -7.824345026049901 ], [ 110.361033343252089, -7.824361445064373 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 33, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_105722.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361011789384818, -7.82440849769216 ], [ 110.360993247389956, -7.824470182477815 ], [ 110.360889483639539, -7.824439569929931 ], [ 110.360908025634401, -7.824377885139746 ], [ 110.361011789384818, -7.82440849769216 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 34, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_105722.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360888522245673, -7.82443925196709 ], [ 110.360717773097548, -7.824388329985427 ], [ 110.36075821044146, -7.824255250394503 ], [ 110.360928959589586, -7.824306172392418 ], [ 110.360888522245673, -7.82443925196709 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 35, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_105722.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.36079029001877, -7.824506287775097 ], [ 110.360664018690159, -7.824485879411855 ], [ 110.360677252407868, -7.824405516842814 ], [ 110.360803523736465, -7.824425925209989 ], [ 110.36079029001877, -7.824506287775097 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 36, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_105722.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360813560565646, -7.824599259194991 ], [ 110.360828995631778, -7.824519433116924 ], [ 110.360946492819735, -7.824541731141583 ], [ 110.360931057753618, -7.824621557215379 ], [ 110.360813560565646, -7.824599259194991 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 37, "Nama": "Komplek Q", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_105722.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360932249892272, -7.824638233488325 ], [ 110.360942263857169, -7.824576441516115 ], [ 110.360987395319796, -7.824583619930606 ], [ 110.3609773813549, -7.824645411901751 ], [ 110.360932249892272, -7.824638233488325 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 38, "Nama": "Badan Usaha Komplek L", "Kategori": "Bangunan Umum", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_105619.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360934991811249, -7.824639083836503 ], [ 110.36099090311518, -7.824649311635282 ], [ 110.360980675812087, -7.824704183983901 ], [ 110.360924764508127, -7.824693956186468 ], [ 110.360934991811249, -7.824639083836503 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 39, "Nama": "Masjid Komplek L", "Kategori": "Bangunan Umum", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360506036472657, -7.824787540429255 ], [ 110.360409289770757, -7.82475741165474 ], [ 110.36043771035682, -7.824667841662594 ], [ 110.360534457058719, -7.824697970443581 ], [ 110.360506036472657, -7.824787540429255 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 40, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_104944.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360617811394974, -7.824709686349975 ], [ 110.360786808973756, -7.824737275418568 ], [ 110.36077795105038, -7.824790529165031 ], [ 110.360608953471598, -7.824762940099963 ], [ 110.360617811394974, -7.824709686349975 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 41, "Nama": "Komplek L", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_105026.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360762012489275, -7.824612935629252 ], [ 110.360905832099235, -7.824632966053742 ], [ 110.360895776192962, -7.824703829811207 ], [ 110.36075195658303, -7.824683799390116 ], [ 110.360762012489275, -7.824612935629252 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 42, "Nama": "Komplek L", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_105026.jpg\" width= '300' height='400'/>" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360761237599164, -7.824613348992978 ], [ 110.360744213858851, -7.824719548024974 ], [ 110.360638306844109, -7.824702885758668 ], [ 110.360655330584422, -7.824596686722426 ], [ 110.360761237599164, -7.824613348992978 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 43, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360561005987037, -7.824843415367084 ], [ 110.360554330010444, -7.824895758992582 ], [ 110.360436200598471, -7.824880971873576 ], [ 110.360442876575064, -7.82482862824622 ], [ 110.360561005987037, -7.824843415367084 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 44, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360559289307346, -7.824893869331129 ], [ 110.360568529930916, -7.824840658319201 ], [ 110.360621747001446, -7.824849728695268 ], [ 110.360612506377876, -7.824902939706038 ], [ 110.360559289307346, -7.824893869331129 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 45, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.36031113372043, -7.82476688406166 ], [ 110.360316093017317, -7.824726067359689 ], [ 110.360361073910838, -7.824731431314265 ], [ 110.360356114613964, -7.824772248015713 ], [ 110.36031113372043, -7.82476688406166 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 46, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360401545517647, -7.824779072381612 ], [ 110.36035983314045, -7.824770785184606 ], [ 110.360366890601412, -7.82473592091891 ], [ 110.360408602978609, -7.824744208116611 ], [ 110.360401545517647, -7.824779072381612 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 47, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360591715479387, -7.82469573827994 ], [ 110.360602494284691, -7.824594293025391 ], [ 110.360645983503616, -7.824598828216131 ], [ 110.36063520469834, -7.824700273469575 ], [ 110.360591715479387, -7.82469573827994 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 48, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360602494284691, -7.824594293025391 ], [ 110.360594121443867, -7.824673094429399 ], [ 110.360498795842929, -7.824663153581543 ], [ 110.360507168683739, -7.824584352175658 ], [ 110.360602494284691, -7.824594293025391 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 49, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360447663451453, -7.824635926921337 ], [ 110.36045314637316, -7.824600770634691 ], [ 110.360502360547883, -7.824608303745113 ], [ 110.360496877626176, -7.824643460031122 ], [ 110.360447663451453, -7.824635926921337 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 50, "Nama": "Komplek L", "Kategori": "Asrama Putra", "foto": "-" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.360432531764033, -7.824597615199702 ], [ 110.36045314637316, -7.824600770634691 ], [ 110.360447663451453, -7.824635926921337 ], [ 110.360427048842311, -7.824632771486615 ], [ 110.36041331540477, -7.824720829756511 ], [ 110.36037407864255, -7.824714823869322 ], [ 110.360387812080106, -7.824626765598156 ], [ 110.360393295001828, -7.824591609310738 ], [ 110.360432531764033, -7.824597615199702 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 51, "Nama": "Komplek R1", "Kategori": "Asrama Putri", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\1653725443535.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361684108473327, -7.826600773084035 ], [ 110.361660371268286, -7.826655852123642 ], [ 110.3616831732799, -7.826665692383044 ], [ 110.361633874950471, -7.826779927286209 ], [ 110.361630409044736, -7.826787958540189 ], [ 110.361607607033108, -7.826778118280791 ], [ 110.361607651597936, -7.826778015014442 ], [ 110.361552518664624, -7.826754232784169 ], [ 110.361628955595265, -7.826576982249911 ], [ 110.361684108473327, -7.826600773084035 ] ] ] ] } },
+{ "type": "Feature", "properties": { "id": 52, "Nama": "Komplek K3 Arafah", "Kategori": "Asrama Putra", "foto": "<img src= \"C:\\Users\\HP\\Downloads\\Documents\\SEMESTER 8 WADOOH\\TUGAS AKHIR\\Data\\HTML\\resources\\foto\\Foto BangunanPsn\\_IMG_20220312_103702.jpg\" width= '300' />" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 110.361975539355981, -7.826605558580241 ], [ 110.361923852933842, -7.826602985106105 ], [ 110.361928006662794, -7.826521107377303 ], [ 110.361979693084947, -7.826523680851944 ], [ 110.361986688376476, -7.82638579060029 ], [ 110.362059590483867, -7.826389488987515 ], [ 110.362048441463372, -7.82660925696747 ], [ 110.361975539355981, -7.826605558580241 ] ] ] ] } }
+]
+}
+;
+
+
+        // Initialize Mapbox map
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [110.36135, -7.82640], 
+            zoom: 15
+        });
+
+        map.on('load', () => {
+            // Add GeoJSON sources
+            map.addSource('asrama-putra', {
+                type: 'geojson',
+                data: geojsonAsramaPutra
+            });
+
+            map.addSource('asrama-putri', {
+                type: 'geojson',
+                data: geojsonAsramaPutri
+            });
+
+            map.addSource('bangunan-umum', {
+                type: 'geojson',
+                data: geojsonBangunanUmum
+            });
+
+            // Add layers for each GeoJSON source
+            map.addLayer({
+                id: 'asrama-putra-layer',
+                type: 'fill',
+                source: 'asrama-putra',
+                paint: {
+                    'fill-color': '#a7a448', // Red for Asrama Putra
+                    'fill-opacity': 0.5
+                }
+            });
+
+            map.addLayer({
+                id: 'asrama-putri-layer',
+                type: 'fill',
+                source: 'asrama-putri',
+                paint: {
+                    'fill-color': '#ac74aa', // Blue for Asrama Putri
+                    'fill-opacity': 0.5
+                }
+            });
+
+            map.addLayer({
+                id: 'bangunan-umum-layer',
+                type: 'fill',
+                source: 'bangunan-umum',
+                paint: {
+                    'fill-color': '#788ad7', // Green for Bangunan Umum
+                    'fill-opacity': 0.5
+                }
+            });
+
+            
+
+            // Add click event for popups
+            ['asrama-putra-layer', 'asrama-putri-layer', 'bangunan-umum-layer'].forEach(layer => {
+                map.on('click', layer, (e) => {
+                    const properties = e.features[0].properties;
+                    const popupContent = `
+                        <h3>${properties.Nama}</h3>
+                        <img src="${properties.foto}" style="width:100%;max-width:300px;" />
+                    `;
+                    new mapboxgl.Popup()
+                        .setLngLat(e.lngLat)
+                        .setHTML(popupContent)
+                        .addTo(map);
+                });
+
+                // Change cursor to pointer on hover
+                map.on('mouseenter', layer, () => {
+                    map.getCanvas().style.cursor = 'pointer';
+                });
+
+                map.on('mouseleave', layer, () => {
+                    map.getCanvas().style.cursor = '';
+                });
+            });
+
+            // Add navigation control
+            map.addControl(new mapboxgl.NavigationControl());
+        });
+    </script>
+</body>
+</html>
